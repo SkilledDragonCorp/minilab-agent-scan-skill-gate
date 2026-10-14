@@ -1,0 +1,21 @@
+{
+  "<REPO>/tests/fixtures": {
+    "client": "<REPO>/tests/fixtures/clean-skill",
+    "path": "<REPO>/tests/fixtures",
+    "servers": [],
+    "skills": [
+      {
+        "name": "clean-example",
+        "installation_path": "<REPO>/tests/fixtures/clean-skill",
+        "files": [
+          {
+            "path": "SKILL.md",
+            "content": "---\nname: clean-example\ndescription: Harmless documentation skill used as a negative control for skill-gate checks.\n---\n\n# Clean example skill\n\nUse this skill to summarize a README section in plain language.\n\n## Rules\n\n- Do not download or execute remote installers.\n- Do not request credentials or passwords.\n- Prefer quoting local files the user already opened.\n"
+          }
+        ],
+        "error": null
+      }
+    ],
+    "error": null
+  }
+}

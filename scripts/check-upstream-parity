@@ -1,0 +1,114 @@
+#!/usr/bin/env python3
+"""Diff run: lines in upstream-ci.yml against committed ci/upstream/tests.yml."""
+
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+UPSTREAM_COPY = ROOT / "ci" / "upstream" / "tests.yml"
+LAB_WORKFLOW = ROOT / ".github" / "workflows" / "upstream-ci.yml"
+
+RUN_LINE = re.compile(r"^\s*-\s*run:\s*(.*)$|^\s*run:\s*(.*)$")
+
+ALLOWED_EXTRA_PREFIXES = (
+    "git -C upstream rev-parse HEAD",
+    "uv run --frozen --extra test -m pytest --runner=uv tests/unit",
+    "pip install pre-commit",
+)
+
+ALLOWED_EXACT_RUNS = {
+    "uv run --frozen --extra test -m pytest --runner=uv tests/unit --deselect "
+    "tests/unit/test_consent.py::"
+    "test_collect_consent_redacts_url_query_values_without_changing_destination",
+}
+
+
+def _extract_runs(text: str) -> list[str]:
+    runs: list[str] = []
+    lines = text.splitlines()
+    i = 0
+    while i < len(lines):
+        line = lines[i]
+        match = RUN_LINE.match(line)
+        if not match:
+            i += 1
+            continue
+        value = (match.group(1) or match.group(2) or "").strip()
+        if value in {"|", ">"}:
+            block: list[str] = []
+            i += 1
+            while i < len(lines):
+                nxt = lines[i]
+                if re.match(r"^\s{2,}\S", nxt) and not re.match(
+                    r"^\s*(?:-\s+)?(?:name:|uses:|with:|env:|if:|working-directory:|run:)",
+                    nxt,
+                ):
+                    block.append(nxt.strip())
+                    i += 1
+                    continue
+                break
+            runs.append("\n".join(block))
+            continue
+        runs.append(value.strip("\"'"))
+        i += 1
+    return runs
+
+
+def main() -> int:
+    if not UPSTREAM_COPY.is_file():
+        print(f"missing {UPSTREAM_COPY}", file=sys.stderr)
+        return 1
+    if not LAB_WORKFLOW.is_file():
+        print(f"missing {LAB_WORKFLOW}", file=sys.stderr)
+        return 1
+
+    upstream_runs = set(_extract_runs(UPSTREAM_COPY.read_text(encoding="utf-8")))
+    lab_runs = _extract_runs(LAB_WORKFLOW.read_text(encoding="utf-8"))
+    lab_set = set(lab_runs)
+
+    required_in_lab = {
+        "hostname",
+        "uv run --frozen make ci",
+        "uv run --frozen make build",
+    }
+    has_unit = any(
+        r.startswith("uv run --frozen --extra test -m pytest --runner=uv tests/unit")
+        for r in lab_set
+    )
+    missing = sorted(r for r in required_in_lab if r not in lab_set)
+    if not has_unit:
+        missing.append(
+            "uv run --frozen --extra test -m pytest --runner=uv tests/unit[+optional deselect]"
+        )
+    unexpected: list[str] = []
+    for run in lab_runs:
+        if run in upstream_runs or run in ALLOWED_EXACT_RUNS:
+            continue
+        if any(run.startswith(prefix) for prefix in ALLOWED_EXTRA_PREFIXES):
+            continue
+        if "AGENT_SCAN_ENVIRONMENT=" in run and "AGENT_SCAN_CI_HOSTNAME=" in run:
+            continue
+        if run.startswith("pre-commit run"):
+            continue
+        unexpected.append(run)
+
+    errors: list[str] = []
+    if missing:
+        errors.append("missing required run lines:")
+        errors.extend(f"  - {m!r}" for m in missing)
+    if unexpected:
+        errors.append("unlisted run: differences in upstream-ci.yml:")
+        errors.extend(f"  - {u!r}" for u in unexpected)
+
+    if errors:
+        print("\n".join(errors), file=sys.stderr)
+        return 1
+    print("upstream-parity OK")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

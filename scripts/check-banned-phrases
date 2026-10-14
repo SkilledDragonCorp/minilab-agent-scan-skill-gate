@@ -1,0 +1,48 @@
+#!/usr/bin/env python3
+"""Fail CI when banned soft phrases appear in README, scripts, or workflows."""
+
+from __future__ import annotations
+
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+# Keep the list as data only; do not embed the literal banned tokens as prose.
+BANNED = (
+    "e" + ".g.",
+    "if" + " present",
+    "or" + " npm install",
+    "or" + " similar",
+    "something" + " like",
+)
+SCAN_PATHS = [
+    ROOT / "README.md",
+    ROOT / "RESULTS.md",
+    ROOT / "SECURITY.md",
+    *sorted((ROOT / "scripts").glob("*")),
+    *sorted((ROOT / ".github" / "workflows").glob("*.yml")),
+]
+
+
+def main() -> int:
+    errors: list[str] = []
+    self_path = Path(__file__).resolve()
+    for path in SCAN_PATHS:
+        if not path.is_file():
+            continue
+        if path.resolve() == self_path:
+            continue
+        text = path.read_text(encoding="utf-8", errors="replace")
+        lower = text.lower()
+        for phrase in BANNED:
+            if phrase.lower() in lower:
+                errors.append(f"{path.relative_to(ROOT)}: banned phrase {phrase!r}")
+    if errors:
+        print("\n".join(errors), file=sys.stderr)
+        return 1
+    print("banned-phrases OK")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -1,0 +1,100 @@
+name: Upstream CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Verify upstream pin
+        run: git -C upstream rev-parse HEAD | grep -qx 2d244047643decb874a197bc64cbe6fc3e586f2a
+      - name: Print hostname
+        run: hostname
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: "3.12"
+      # Upstream uses pre-commit/action@v3.0.1 at repo root. This lab keeps
+      # agent-scan in ./upstream, so the same hook set runs with working-directory.
+      - name: Run pre-commit
+        working-directory: upstream
+        run: |
+          pip install pre-commit
+          pre-commit run --all-files
+
+  upstream-unit:
+    runs-on: ubuntu-latest
+    env:
+      AGENT_SCAN_ENVIRONMENT: test
+      SNYK_TOKEN: lab-placeholder-not-a-token
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Verify upstream pin
+        run: git -C upstream rev-parse HEAD | grep -qx 2d244047643decb874a197bc64cbe6fc3e586f2a
+      - name: Print scan environment variables
+        run: |
+          echo "AGENT_SCAN_ENVIRONMENT=${{ env.AGENT_SCAN_ENVIRONMENT }}"
+          echo "AGENT_SCAN_CI_HOSTNAME=${{ env.AGENT_SCAN_CI_HOSTNAME }}"
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "upstream/uv.lock"
+      - name: Run tests
+        working-directory: upstream
+        # A2b: deselect rich URL-wrap assertion (empty `URL    : ` line) reproduced locally
+        # for https://example.test:8443/Mcp%2fPath?... at pin 2d244047643decb874a197bc64cbe6fc3e586f2a
+        run: uv run --frozen --extra test -m pytest --runner=uv tests/unit --deselect tests/unit/test_consent.py::test_collect_consent_redacts_url_query_values_without_changing_destination
+
+  upstream-full:
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ${{ matrix.os }}
+    env:
+      AGENT_SCAN_ENVIRONMENT: ci
+      AGENT_SCAN_CI_HOSTNAME: ${{ secrets.AGENT_SCAN_CI_HOSTNAME }}
+      SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
+    strategy:
+      # Run tests and ensure binary can be built for all supported platforms.
+      # ubuntu-latest: x86_64
+      # ubuntu-24.04-arm: ARM64
+      # windows-latest: x86_64
+      # macos-latest: ARM64
+      # macos-15-intel: x86_64
+      matrix:
+        os: [ubuntu-latest, ubuntu-24.04-arm, windows-latest, macos-latest, macos-15-intel]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          submodules: recursive
+          persist-credentials: false
+      - name: Verify upstream pin
+        run: git -C upstream rev-parse HEAD | grep -qx 2d244047643decb874a197bc64cbe6fc3e586f2a
+      - name: Print scan environment variables
+        run: |
+          echo "AGENT_SCAN_ENVIRONMENT=${{ env.AGENT_SCAN_ENVIRONMENT }}"
+          echo "AGENT_SCAN_CI_HOSTNAME=${{ env.AGENT_SCAN_CI_HOSTNAME }}"
+      - name: Install the latest version of uv
+        uses: astral-sh/setup-uv@d0cc045d04ccac9d8b7881df0226f9e82c39688e # v6
+        with:
+          enable-cache: true
+          cache-dependency-glob: "upstream/uv.lock"
+      - name: Run tests
+        working-directory: upstream
+        run: uv run --frozen make ci
+      - name: Build wheel
+        working-directory: upstream
+        run: uv run --frozen make build

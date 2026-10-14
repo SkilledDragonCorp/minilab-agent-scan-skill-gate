@@ -1,0 +1,71 @@
+#!/usr/bin/env python3
+"""Fail when skills layout / frontmatter rules are violated."""
+
+from __future__ import annotations
+
+import re
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[1]
+FRONTMATTER = re.compile(r"^---\s*\n(.*?)\n---\s*\n", re.DOTALL)
+SKIP_DIR_NAMES = {".venv", "venv", "upstream", "node_modules", ".git"}
+
+
+def main() -> int:
+    errors: list[str] = []
+
+    for forbidden in (ROOT / ".cursor" / "skills", ROOT / ".agents" / "skills"):
+        if forbidden.exists():
+            errors.append(f"forbidden skills directory: {forbidden.relative_to(ROOT)}")
+
+    skills_root = ROOT / ".claude" / "skills"
+    if not skills_root.is_dir():
+        errors.append("missing .claude/skills/")
+        print("\n".join(errors), file=sys.stderr)
+        return 1
+
+    for skill_md in ROOT.rglob("SKILL.md"):
+        if any(part in SKIP_DIR_NAMES for part in skill_md.parts):
+            continue
+        # Fixture copies used by tests are not installable skills.
+        if "tests" in skill_md.parts and "fixtures" in skill_md.parts:
+            continue
+
+        rel = skill_md.relative_to(ROOT)
+        parts = rel.parts
+        if parts[:2] != (".claude", "skills"):
+            errors.append(f"SKILL.md outside .claude/skills/: {rel}")
+            continue
+        # .claude / skills / <name> / SKILL.md
+        if len(parts) != 4:
+            errors.append(f"SKILL.md must be .claude/skills/<name>/SKILL.md: {rel}")
+            continue
+        folder = parts[2]
+        text = skill_md.read_text(encoding="utf-8")
+        match = FRONTMATTER.match(text)
+        if not match:
+            errors.append(f"missing YAML frontmatter: {rel}")
+            continue
+        meta: dict[str, str] = {}
+        for line in match.group(1).splitlines():
+            if ":" not in line:
+                continue
+            key, _, value = line.partition(":")
+            meta[key.strip()] = value.strip().strip('"').strip("'")
+        name = meta.get("name", "")
+        description = meta.get("description", "")
+        if name != folder:
+            errors.append(f"frontmatter name '{name}' != folder '{folder}' ({rel})")
+        if not description:
+            errors.append(f"empty description: {rel}")
+
+    if errors:
+        print("\n".join(errors), file=sys.stderr)
+        return 1
+    print("skills-layout OK")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
